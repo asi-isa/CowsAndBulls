@@ -3,6 +3,7 @@ import Playgrounds
 
 struct ContentView: View {
     @State private var isGameOver = false
+    @State private var maxiumNumberOfGuessesReached = false
     @State private var guesses = [String]()
     @State private var guess = ""
     @State private var answer = ""
@@ -43,6 +44,11 @@ struct ContentView: View {
         .frame(minHeight: 300)
         .onChange(of: answerLength, initial: true) {
             startNewGame()
+        }
+        .alert("Game Over", isPresented: $maxiumNumberOfGuessesReached) {
+            Button("OK", action: startNewGame)
+        } message: {
+            Text("You've reached the maximum number of guesses. Start again.")
         }
         .alert("You win!", isPresented: $isGameOver) {
             Button("OK", action: startNewGame)
@@ -86,6 +92,10 @@ struct ContentView: View {
     
     private func submitGuess() {
         print(answer)
+        guard guesses.count < maximumGuesses else {
+            maxiumNumberOfGuessesReached = true
+            return
+        }
         guard Set(guess).count == answerLength else { return }
         guard guess.count ==  answerLength else { return }
         
